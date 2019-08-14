@@ -1,0 +1,30 @@
+syntax = "proto3";
+package proto;
+
+// Data types
+// Request serialization message
+message Request {
+    int64 a = 1; // position in the structure
+    int64 b = 2;
+}
+
+message Response {
+    int64 result = 1;
+}
+
+// rpc Add(func) returns (func)
+service AddService {
+    rpc Add(Request) returns (Response);
+    rpc Subtract(Request) returns (Response);
+    rpc Multiply(Request) returns (Response);
+    rpc Divide(Request) returns (Response);
+}
+
+
+
+
+
+
+
+
+

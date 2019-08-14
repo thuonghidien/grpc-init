@@ -1,0 +1,9 @@
+type: google.api.Service
+config_version: 3
+
+name: sample.endpoints.ignition-heart.cloud.goog
+
+title: Simple Calculation gRPC API (v2)
+apis:
+  - name: proto.AddService
+

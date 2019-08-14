@@ -1,0 +1,28 @@
+type: google.api.Service
+config_version: 3
+
+name: sample.endpoints.ignition-heart.cloud.goog
+
+title: Simple Calculation gRPC API
+apis:
+- name: proto.AddService
+
+
+authentication:
+  providers:
+  - id: google_service_account
+    audiences: hellogrpc.endpoints.ignition-heart.cloud.goog
+    # Replace SERVICE-ACCOUNT-ID with your service account's email address.
+    issuer: SERVICE-ACCOUNT-ID
+    jwks_uri: https://www.googleapis.com/robot/v1/metadata/x509/SERVICE-ACCOUNT-ID
+  rules:
+  # This auth rule will apply to all methods.
+  - selector: "*"
+    requirements:
+      - provider_id: google_service_account
+
+
+usage:
+  rules:
+  - selector: "*"
+    allow_unregistered_calls: true
