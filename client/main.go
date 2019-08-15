@@ -15,7 +15,7 @@ import (
 	"strconv"
 )
 
-// 35.220.234.185:80
+// 35.241.78.226:80
 // AIzaSyCLuekH90oV-nYyIEmNqK6kYOCyErEPTUc
 var (
 	addr     = flag.String("addr", "", "Address of grpc server.")
