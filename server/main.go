@@ -18,6 +18,7 @@ var (
 
 func main() {
 
+	flag.Parse()
 	fmt.Println("Server init")
 	listener, err := net.Listen("tcp", *addr)
 	if err != nil {

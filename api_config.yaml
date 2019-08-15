@@ -3,7 +3,7 @@ config_version: 3
 
 name: sample.endpoints.ignition-heart.cloud.goog
 
-title: Simple Calculation gRPC API (v3)
+title: Simple Calculation gRPC API (v4)
 apis:
   - name: proto.AddService
 
