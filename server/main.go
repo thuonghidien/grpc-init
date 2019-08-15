@@ -2,63 +2,55 @@ package main
 
 import (
 	"context"
-	"flag"
-	"fmt"
-	pb "github.com/thuonghidien/grpc-init/service"
+	pb "github.com/thuonghidien/grpc-init/customer"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/reflection"
+	"log"
 	"net"
+	"strings"
 )
 
-type server struct{}
-
-var (
-	addr = flag.String("addr", ":50051", "Network host:port to listen on for gRPC connections.")
+const (
+	port = ":50051"
 )
+
+// server is used to implement customer.CustomerServer.
+type server struct {
+	savedCustomers []*pb.CustomerRequest
+}
+
+// CreateCustomer creates a new Customer
+func (s *server) CreateCustomer(ctx context.Context, in *pb.CustomerRequest) (*pb.CustomerResponse, error) {
+	s.savedCustomers = append(s.savedCustomers, in)
+	return &pb.CustomerResponse{Id: in.Id, Success: true}, nil
+}
+
+// GetCustomers returns all customers by given filter
+func (s *server) GetCustomers(filter *pb.CustomerFilter, stream pb.Customer_GetCustomersServer) error {
+	for _, customer := range s.savedCustomers {
+		if filter.Keyword != "" {
+			if !strings.Contains(customer.Name, filter.Keyword) {
+				continue
+			}
+		}
+		if err := stream.Send(customer); err != nil {
+			return err
+		}
+	}
+	return nil
+}
 
 func main() {
 
-	flag.Parse()
-	fmt.Println("Server init")
-	listener, err := net.Listen("tcp", *addr)
+	lis, err := net.Listen("tcp", port)
 	if err != nil {
-		panic(err)
+		log.Fatalf("failed to listen: %v", err)
 	}
-	srv := grpc.NewServer()
-	pb.RegisterAddServiceServer(srv, &server{})
-	reflection.Register(srv)
+	// Creates a new gRPC server
+	s := grpc.NewServer()
+	pb.RegisterCustomerServer(s, &server{})
 
-	if err = srv.Serve(listener); err != nil {
-		panic(err)
+	err = s.Serve(lis)
+	if err != nil {
+		log.Fatalf("failed to serve: %v", err)
 	}
-}
-
-func (s *server) Add(ctx context.Context, request *pb.Request) (*pb.Response, error) {
-
-	a, b := request.GetA(), request.GetB()
-	result := a + b
-	return &pb.Response{Result: result}, nil
-}
-
-func (s *server) Subtract(ctx context.Context, request *pb.Request) (*pb.Response, error) {
-	a, b := request.GetA(), request.GetB()
-	result := a - b
-	return &pb.Response{Result: result}, nil
-}
-
-func (s *server) Multiply(ctx context.Context, request *pb.Request) (*pb.Response, error) {
-
-	a, b := request.GetA(), request.GetB()
-	result := a * b
-	return &pb.Response{Result: result}, nil
-}
-
-func (s *server) Divide(ctx context.Context, request *pb.Request) (*pb.Response, error) {
-	a, b := request.GetA(), request.GetB()
-	if b == 0 {
-
-		return &pb.Response{Result: -1}, nil
-	}
-	result := a / b
-	return &pb.Response{Result: result}, nil
 }

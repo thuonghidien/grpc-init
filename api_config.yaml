@@ -1,9 +1,9 @@
 type: google.api.Service
 config_version: 3
 
-name: sample.endpoints.ignition-heart.cloud.goog
+name: customer.endpoints.ignition-heart.cloud.goog
 
-title: Calculation gRPC API (2019/08/15 12:31:00)
+title: Customer API
 apis:
-  - name: service.AddService
+  - name: customer.CustomerClient
 

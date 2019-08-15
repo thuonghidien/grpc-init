@@ -42,7 +42,7 @@ option go_package = "google.golang.org/genproto/protobuf/source_context;source_c
 // `SourceContext` represents information about the source of a
 // protobuf element, like the file in which it is defined.
 message SourceContext {
-  // The path-qualified name of the .service file that contained the associated
-  // protobuf element.  For example: `"google/protobuf/source_context.service"`.
+  // The path-qualified name of the .customer file that contained the associated
+  // protobuf element.  For example: `"google/protobuf/source_context.customer"`.
   string file_name = 1;
 }

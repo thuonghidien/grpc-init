@@ -71,7 +71,7 @@ option cc_enable_arenas = true;
 //     z: 8
 //
 // The result will not contain specific values for fields x,y and z
-// (their value will be set to the default, and omitted in service text
+// (their value will be set to the default, and omitted in customer text
 // output):
 //
 //
@@ -163,7 +163,7 @@ option cc_enable_arenas = true;
 // Note that in the presence of schema evolution, this may mean that
 // fields the client does not know and has therefore not filled into
 // the request will be reset to their default. If this is unwanted
-// behavior, a specific service may require a client to always specify
+// behavior, a specific customer may require a client to always specify
 // a field mask, producing an error if not.
 //
 // As with get operations, the location of the resource which
@@ -194,7 +194,7 @@ option cc_enable_arenas = true;
 //       string address = 2;
 //     }
 //
-// In service a field mask for `Profile` may look as such:
+// In customer a field mask for `Profile` may look as such:
 //
 //     mask {
 //       paths: "user.display_name"
