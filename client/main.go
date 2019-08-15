@@ -1,12 +1,14 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/thuonghidien/grpc-init/proto"
+	pb "github.com/thuonghidien/grpc-init/proto"
 	"golang.org/x/oauth2/google"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/metadata"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -14,8 +16,8 @@ import (
 )
 
 var (
-	addr     = flag.String("addr", "127.0.0.1:50051", "Address of grpc server.")
-	key      = flag.String("api-key", "", "API key.")
+	addr     = flag.String("addr", "35.220.234.185:80", "Address of grpc server.")
+	key      = flag.String("api-key", "AIzaSyCLuekH90oV-nYyIEmNqK6kYOCyErEPTUc", "API key.")
 	token    = flag.String("token", "", "Authentication token.")
 	keyfile  = flag.String("keyfile", "", "Path to a Google service account key file.")
 	audience = flag.String("audience", "", "Audience.")
@@ -30,7 +32,7 @@ func main() {
 	}
 	defer conn.Close()
 
-	client := proto.NewAddServiceClient(conn)
+	client := pb.NewAddServiceClient(conn)
 	if *keyfile != "" {
 		log.Printf("Authenticating using Google service account key in %s", *keyfile)
 		keyBytes, err := ioutil.ReadFile(*keyfile)
@@ -52,6 +54,17 @@ func main() {
 		// Calls to this particular implementation of TokenSource.Token() are cheap.
 	}
 
+	ctx := context.Background()
+	if *key != "" {
+		log.Printf("Using API key: %s", *key)
+		ctx = metadata.AppendToOutgoingContext(ctx, "x-api-key", *key)
+	}
+	if *token != "" {
+		log.Printf("Using authentication token: %s", *token)
+		ctx = metadata.AppendToOutgoingContext(ctx, "Authorization", fmt.Sprintf("Bearer %s", *token))
+	}
+
+
 	g := gin.Default()
 	g.GET("/add/:a/:b", func(ctx *gin.Context) {
 
@@ -71,7 +84,7 @@ func main() {
 			return
 		}
 
-		req := &proto.Request{A: int64(a), B: int64(b)}
+		req := &pb.Request{A: int64(a), B: int64(b)}
 		response, err := client.Add(ctx, req)
 		if err != nil {
 			ctx.JSON(http.StatusInternalServerError, gin.H{
@@ -103,7 +116,7 @@ func main() {
 			return
 		}
 
-		req := &proto.Request{A: int64(a), B: int64(b)}
+		req := &pb.Request{A: int64(a), B: int64(b)}
 		response, err := client.Subtract(ctx, req)
 		if err != nil {
 			ctx.JSON(http.StatusInternalServerError, gin.H{
@@ -135,7 +148,7 @@ func main() {
 			return
 		}
 
-		req := &proto.Request{A: int64(a), B: int64(b)}
+		req := &pb.Request{A: int64(a), B: int64(b)}
 		response, err := client.Multiply(ctx, req)
 		if err != nil {
 			ctx.JSON(http.StatusInternalServerError, gin.H{
@@ -167,7 +180,7 @@ func main() {
 			return
 		}
 
-		req := &proto.Request{A: int64(a), B: int64(b)}
+		req := &pb.Request{A: int64(a), B: int64(b)}
 		response, err := client.Divide(ctx, req)
 		if err != nil {
 			ctx.JSON(http.StatusInternalServerError, gin.H{

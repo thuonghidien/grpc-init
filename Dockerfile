@@ -5,8 +5,9 @@ RUN apk update \
 
 COPY . /go/src/app
 
-RUN go install app/server
+# Don't do this in production! Use vendoring instead.
+RUN go get -v app/server
 
-EXPOSE 50051
+RUN go install app/server
 
 ENTRYPOINT ["/go/bin/server"]
