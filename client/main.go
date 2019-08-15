@@ -15,8 +15,10 @@ import (
 	"strconv"
 )
 
+// 35.220.234.185:80
+// AIzaSyCLuekH90oV-nYyIEmNqK6kYOCyErEPTUc
 var (
-	addr     = flag.String("addr", "127.0.0.1:50051", "Address of grpc server.")
+	addr     = flag.String("addr", "", "Address of grpc server.")
 	key      = flag.String("api-key", "", "API key.")
 	token    = flag.String("token", "", "Authentication token.")
 	keyfile  = flag.String("keyfile", "", "Path to a Google service account key file.")
@@ -64,6 +66,7 @@ func main() {
 		log.Printf("Using authentication token: %s", *token)
 		ctx = metadata.AppendToOutgoingContext(ctx, "Authorization", fmt.Sprintf("Bearer %s", *token))
 	}
+
 
 	g := gin.Default()
 	g.GET("/add/:a/:b", func(ctx *gin.Context) {
