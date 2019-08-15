@@ -14,10 +14,10 @@ message Response {
 
 // rpc Add(func) returns (func)
 service AddService {
-    rpc Add(Request) returns (Response);
-    rpc Subtract(Request) returns (Response);
-    rpc Multiply(Request) returns (Response);
-    rpc Divide(Request) returns (Response);
+    rpc Add(Request) returns (Response){}
+    rpc Subtract(Request) returns (Response){}
+    rpc Multiply(Request) returns (Response){}
+    rpc Divide(Request) returns (Response){}
 }
 
 

@@ -16,8 +16,8 @@ import (
 )
 
 var (
-	addr     = flag.String("addr", "35.220.234.185:80", "Address of grpc server.")
-	key      = flag.String("api-key", "AIzaSyCLuekH90oV-nYyIEmNqK6kYOCyErEPTUc", "API key.")
+	addr     = flag.String("addr", "127.0.0.1:50051", "Address of grpc server.")
+	key      = flag.String("api-key", "", "API key.")
 	token    = flag.String("token", "", "Authentication token.")
 	keyfile  = flag.String("keyfile", "", "Path to a Google service account key file.")
 	audience = flag.String("audience", "", "Audience.")
@@ -25,6 +25,7 @@ var (
 
 func main() {
 
+	flag.Parse()
 	// non HTTPs
 	conn, err := grpc.Dial(*addr, grpc.WithInsecure())
 	if err != nil {
@@ -63,7 +64,6 @@ func main() {
 		log.Printf("Using authentication token: %s", *token)
 		ctx = metadata.AppendToOutgoingContext(ctx, "Authorization", fmt.Sprintf("Bearer %s", *token))
 	}
-
 
 	g := gin.Default()
 	g.GET("/add/:a/:b", func(ctx *gin.Context) {
