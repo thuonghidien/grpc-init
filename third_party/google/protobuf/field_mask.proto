@@ -71,7 +71,7 @@ option cc_enable_arenas = true;
 //     z: 8
 //
 // The result will not contain specific values for fields x,y and z
-// (their value will be set to the default, and omitted in proto text
+// (their value will be set to the default, and omitted in service text
 // output):
 //
 //
@@ -194,7 +194,7 @@ option cc_enable_arenas = true;
 //       string address = 2;
 //     }
 //
-// In proto a field mask for `Profile` may look as such:
+// In service a field mask for `Profile` may look as such:
 //
 //     mask {
 //       paths: "user.display_name"

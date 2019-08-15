@@ -66,7 +66,7 @@ message Version {
 
 // An encoded CodeGeneratorRequest is written to the plugin's stdin.
 message CodeGeneratorRequest {
-  // The .proto files that were explicitly listed on the command-line.  The
+  // The .service files that were explicitly listed on the command-line.  The
   // code generator should generate code only for these files.  Each file's
   // descriptor will be included in proto_file, below.
   repeated string file_to_generate = 1;
@@ -100,7 +100,7 @@ message CodeGeneratorResponse {
   // Error message.  If non-empty, code generation failed.  The plugin process
   // should exit with status code zero even if it reports an error in this way.
   //
-  // This should be used to indicate errors in .proto files which prevent the
+  // This should be used to indicate errors in .service files which prevent the
   // code generator from generating correct code.  Errors which indicate a
   // problem in protoc itself -- such as the input CodeGeneratorRequest being
   // unparseable -- should be reported by writing a message to stderr and

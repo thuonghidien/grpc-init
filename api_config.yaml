@@ -5,5 +5,5 @@ name: sample.endpoints.ignition-heart.cloud.goog
 
 title: Calculation gRPC API (2019/08/15)
 apis:
-  - name: proto.AddService
+  - name: service.AddService
 
