@@ -5,5 +5,5 @@ name: customer.endpoints.ignition-heart.cloud.goog
 
 title: Customer API
 apis:
-  - name: customer.CustomerClient
+  - name: customer.Customer
 
