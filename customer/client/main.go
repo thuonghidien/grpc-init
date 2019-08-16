@@ -9,7 +9,7 @@ import (
 	"log"
 )
 
-// 35.241.78.226:80
+// 35.220.234.185:80
 // AIzaSyCLuekH90oV-nYyIEmNqK6kYOCyErEPTUc
 const (
 	address = ":50051"
