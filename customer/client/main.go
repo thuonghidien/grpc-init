@@ -2,21 +2,32 @@ package main
 
 import (
 	"context"
+	"flag"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	pb "github.com/thuonghidien/grpc-init/proto"
+	"golang.org/x/oauth2/google"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/metadata"
 	"io"
+	"io/ioutil"
 	"log"
 )
 
 // 35.220.234.185:80
 // AIzaSyCLuekH90oV-nYyIEmNqK6kYOCyErEPTUc
-const (
-	address = ":50051"
+var (
+	addr     = flag.String("addr", ":50051", "Address of grpc server.")
+	key      = flag.String("api-key", "", "API key.")
+	token    = flag.String("token", "", "Authentication token.")
+	keyfile  = flag.String("keyfile", "", "Path to a Google service account key file.")
+	audience = flag.String("audience", "", "Audience.")
 )
+
 
 // createCustomer calls the RPC method CreateCustomer of CustomerServer
 func createCustomer(client pb.CustomerClient, customer *pb.CustomerRequest) {
+
 	resp, err := client.CreateCustomer(context.Background(), customer)
 	if err != nil {
 		log.Fatalf("Could not create Customer: %v", err)
@@ -47,15 +58,51 @@ func getCustomers(client pb.CustomerClient, filter *pb.CustomerFilter) {
 }
 func main() {
 
-	// Set up a connection to the gRPC server.
-	conn, err := grpc.Dial(address, grpc.WithInsecure())
+	flag.Parse()
+
+	// Set up a connection to the server.
+	conn, err := grpc.Dial(*addr, grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
 	}
 	defer conn.Close()
 
 	// Creates a new CustomerClient
+
 	client := pb.NewCustomerClient(conn)
+	fmt.Println(conn)
+	fmt.Println(client)
+
+	if *keyfile != "" {
+		log.Printf("Authenticating using Google service account key in %s", *keyfile)
+		keyBytes, err := ioutil.ReadFile(*keyfile)
+		if err != nil {
+			log.Fatalf("Unable to read service account key file %s: %v", *keyfile, err)
+		}
+
+		tokenSource, err := google.JWTAccessTokenSourceFromJSON(keyBytes, *audience)
+		if err != nil {
+			log.Fatalf("Error building JWT access token source: %v", err)
+		}
+		jwt, err := tokenSource.Token()
+		if err != nil {
+			log.Fatalf("Unable to generate JWT token: %v", err)
+		}
+		*token = jwt.AccessToken
+		// NOTE: the generated JWT token has a 1h TTL.
+		// Make sure to refresh the token before it expires by calling TokenSource.Token() for each outgoing requests.
+		// Calls to this particular implementation of TokenSource.Token() are cheap.
+	}
+
+	ctx := context.Background()
+	if *key != "" {
+		log.Printf("Using API key: %s", *key)
+		ctx = metadata.AppendToOutgoingContext(ctx, "x-api-key", *key)
+	}
+	if *token != "" {
+		log.Printf("Using authentication token: %s", *token)
+		ctx = metadata.AppendToOutgoingContext(ctx, "Authorization", fmt.Sprintf("Bearer %s", *token))
+	}
 
 	g := gin.Default()
 	g.GET("/create", func(ctx *gin.Context) {

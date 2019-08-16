@@ -4,6 +4,7 @@ import (
 	"context"
 	pb "github.com/thuonghidien/grpc-init/proto"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 	"log"
 	"net"
 	"strings"
@@ -48,6 +49,7 @@ func main() {
 	// Creates a new gRPC server
 	s := grpc.NewServer()
 	pb.RegisterCustomerServer(s, &server{})
+	reflection.Register(s)
 
 	err = s.Serve(lis)
 	if err != nil {
