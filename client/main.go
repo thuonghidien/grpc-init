@@ -12,7 +12,7 @@ import (
 // 35.241.78.226:80
 // AIzaSyCLuekH90oV-nYyIEmNqK6kYOCyErEPTUc
 const (
-	address = "35.241.78.226:80"
+	address = ":50051"
 )
 
 // createCustomer calls the RPC method CreateCustomer of CustomerServer
