@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	pb "github.com/thuonghidien/grpc-init/customer"
+	"github.com/thuonghidien/grpc-init/proto"
 	"google.golang.org/grpc"
 	"log"
 	"net"
@@ -15,17 +15,17 @@ const (
 
 // server is used to implement customer.CustomerServer.
 type server struct {
-	savedCustomers []*pb.CustomerRequest
+	savedCustomers []*proto.CustomerRequest
 }
 
 // CreateCustomer creates a new Customer
-func (s *server) CreateCustomer(ctx context.Context, in *pb.CustomerRequest) (*pb.CustomerResponse, error) {
+func (s *server) CreateCustomer(ctx context.Context, in *proto.CustomerRequest) (*proto.CustomerResponse, error) {
 	s.savedCustomers = append(s.savedCustomers, in)
-	return &pb.CustomerResponse{Id: in.Id, Success: true}, nil
+	return &proto.CustomerResponse{Id: in.Id, Success: true}, nil
 }
 
 // GetCustomers returns all customers by given filter
-func (s *server) GetCustomers(filter *pb.CustomerFilter, stream pb.Customer_GetCustomersServer) error {
+func (s *server) GetCustomers(filter *proto.CustomerFilter, stream proto.Customer_GetCustomersServer) error {
 	for _, customer := range s.savedCustomers {
 		if filter.Keyword != "" {
 			if !strings.Contains(customer.Name, filter.Keyword) {
@@ -47,7 +47,7 @@ func main() {
 	}
 	// Creates a new gRPC server
 	s := grpc.NewServer()
-	pb.RegisterCustomerServer(s, &server{})
+	proto.RegisterCustomerServer(s, &server{})
 
 	err = s.Serve(lis)
 	if err != nil {
