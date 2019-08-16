@@ -1,7 +1,7 @@
 type: google.api.Service
 config_version: 3
 
-name: customer.endpoints.ignition-heart.cloud.goog
+name: customer-info.endpoints.ignition-heart.cloud.goog
 
 title: Customer API (2019-08-16)
 apis:
