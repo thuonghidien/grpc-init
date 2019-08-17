@@ -5,7 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	pb "github.com/thuonghidien/grpc-init/proto"
+	pb "github.com/thuonghidien/grpc-init/service"
 	"golang.org/x/oauth2/google"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
