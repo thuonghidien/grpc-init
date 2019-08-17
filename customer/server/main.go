@@ -2,11 +2,10 @@ package main
 
 import (
 	"context"
-	"log"
-	"net"
-
 	pb "github.com/thuonghidien/grpc-init/service"
 	"google.golang.org/grpc"
+	"log"
+	"net"
 )
 
 const (
