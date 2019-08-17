@@ -2,14 +2,15 @@ package main
 
 import (
 	"context"
+	"flag"
 	pb "github.com/thuonghidien/grpc-init/service"
 	"google.golang.org/grpc"
 	"log"
 	"net"
 )
 
-const (
-	port = ":50051"
+var (
+	addr = flag.String("addr", ":50051", "Network host:port to listen on for gRPC connections.")
 )
 
 // server is used to implement HelloWorldServer.
@@ -38,7 +39,7 @@ func (s *server) CreateUser(ctx context.Context, in *pb.CreateUserRequest) (*pb.
 }
 
 func main() {
-	lis, err := net.Listen("tcp", port)
+	lis, err := net.Listen("tcp", *addr)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}

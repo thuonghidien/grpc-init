@@ -1,7 +1,7 @@
 type: google.api.Service
 config_version: 3
 
-name: gateway.endpoints.ignition-heart.cloud.goog
+name: client.endpoints.ignition-heart.cloud.goog
 
 title: Gateway
 apis:
