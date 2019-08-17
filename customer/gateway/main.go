@@ -3,12 +3,12 @@ package main
 import (
 	"flag"
 	"fmt"
-	"net/http"
 	"github.com/golang/glog"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
+	gw "github.com/thuonghidien/grpc-init/service"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
-	gw "github.com/thuonghidien/grpc-init/service"
+	"net/http"
 )
 
 func run() error {
@@ -18,7 +18,7 @@ func run() error {
 
 	mux := runtime.NewServeMux()
 	opts := []grpc.DialOption{grpc.WithInsecure()}
-	endpoint := fmt.Sprintf("localhost:5001")
+	endpoint := fmt.Sprintf("localhost:50051")
 	err := gw.RegisterHelloWorldServiceHandlerFromEndpoint(ctx, mux, endpoint, opts)
 	if err != nil {
 		return err

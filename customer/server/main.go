@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	port = ":5001"
+	port = ":50051"
 )
 
 // server is used to implement HelloWorldServer.
