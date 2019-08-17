@@ -2,57 +2,50 @@ package main
 
 import (
 	"context"
-	pb "github.com/thuonghidien/grpc-init/service"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/reflection"
 	"log"
 	"net"
-	"strings"
+
+	pb "github.com/thuonghidien/grpc-init/service"
+	"google.golang.org/grpc"
 )
 
 const (
 	port = ":50051"
 )
 
-// server is used to implement customer.CustomerServer.
-type server struct {
-	savedCustomers []*pb.CustomerRequest
+// server is used to implement HelloWorldServer.
+type server struct{}
+
+// SayHello implements HelloWorldServer
+func (s *server) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloReply, error) {
+	log.Printf("Received: %v", in.Name)
+	return &pb.HelloReply{Message: "Hello " + in.Name}, nil
 }
 
-// CreateCustomer creates a new Customer
-func (s *server) CreateCustomer(ctx context.Context, in *pb.CustomerRequest) (*pb.CustomerResponse, error) {
-	s.savedCustomers = append(s.savedCustomers, in)
-	return &pb.CustomerResponse{Id: in.Id, Success: true}, nil
+// GetUser
+func (s *server) GetUser(ctx context.Context, in *pb.GetUserRequest) (*pb.User, error) {
+	log.Printf("Received: %v", in.Id)
+	return &pb.User{
+		Id:   in.Id,
+		Name: "SampleUser"}, nil
 }
 
-// GetCustomers returns all customers by given filter
-func (s *server) GetCustomers(filter *pb.CustomerFilter, stream pb.Customer_GetCustomersServer) error {
-	for _, customer := range s.savedCustomers {
-		if filter.Keyword != "" {
-			if !strings.Contains(customer.Name, filter.Keyword) {
-				continue
-			}
-		}
-		if err := stream.Send(customer); err != nil {
-			return err
-		}
-	}
-	return nil
+// CreateUser
+func (s *server) CreateUser(ctx context.Context, in *pb.CreateUserRequest) (*pb.User, error) {
+	log.Printf("Received: %v", in.Name)
+	return &pb.User{
+		Id:   "123",
+		Name: in.Name}, nil
 }
 
 func main() {
-
 	lis, err := net.Listen("tcp", port)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
-	// Creates a new gRPC server
 	s := grpc.NewServer()
-	pb.RegisterCustomerServer(s, &server{})
-	reflection.Register(s)
-
-	err = s.Serve(lis)
-	if err != nil {
+	pb.RegisterHelloWorldServiceServer(s, &server{})
+	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}
 }
