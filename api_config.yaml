@@ -1,9 +1,14 @@
 type: google.api.Service
 config_version: 3
 
-name: client.endpoints.ignition-heart.cloud.goog
+name: ss.endpoints.ignition-heart.cloud.goog
 
-title: Gateway
+title: SS Service
 apis:
   - name: service.HelloWorldService
+
+usage:
+  rules:
+    - selector: "*"
+      allow_unregistered_calls: true
 

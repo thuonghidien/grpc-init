@@ -23,7 +23,6 @@ var (
 	audience = flag.String("audience", "", "Audience.")
 )
 
-
 func run() error {
 
 	ctx := context.Background()
